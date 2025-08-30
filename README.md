@@ -41,5 +41,7 @@ FORWARD_REDIS_PORT=
 ### Cs-fixer
 ```bash
 ./vendor/bin/sail composer cs-fixer:check
+```
+```bash
 ./vendor/bin/sail composer cs-fixer:fix
 ```
