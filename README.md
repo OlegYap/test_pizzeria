@@ -33,3 +33,13 @@ FORWARD_REDIS_PORT=
 ./vendor/bin/sail php artisan migrate --seed
 ```
 
+## Запуск статического анализа кода
+### Phpstan
+```bash
+./vendor/bin/sail composer analyse
+```
+### Cs-fixer
+```bash
+./vendor/bin/sail composer cs-fixer:check
+./vendor/bin/sail composer cs-fixer:fix
+```
