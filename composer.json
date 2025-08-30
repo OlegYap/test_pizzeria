@@ -12,6 +12,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "friendsofphp/php-cs-fixer": "^3.86",
         "larastan/larastan": "*",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
@@ -61,7 +62,10 @@
             "@php artisan test"
         ],
         "analyse": "phpstan analyse",
-        "analyse:ci": "phpstan analyse --error-format=github"
+        "analyse:ci": "phpstan analyse --error-format=github",
+        "cs-fixer:version": "vendor/bin/php-cs-fixer --version",
+        "cs-fixer:check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "cs-fixer:fix": "vendor/bin/php-cs-fixer fix"
     },
     "extra": {
         "laravel": {
