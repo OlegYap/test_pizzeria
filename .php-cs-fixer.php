@@ -18,7 +18,7 @@ $finder = Finder::create()
 
 return (new Config())
     ->setRules([
-        '@PSR12' => true,
+        '@PER-CS3.0' => true,
         'array_syntax' => ['syntax' => 'short'],
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'no_unused_imports' => true,
