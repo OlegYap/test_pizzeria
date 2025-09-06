@@ -14,17 +14,16 @@ FORWARD_DB_PORT=
 FORWARD_REDIS_PORT=
 ```
 
+## Устанавливаем бекэнд зависимости
+```bash
+composer install
+```
+
+
 ## Запускаем docker контейнеры
 ```bash
 ./vendor/bin/sail up -d 
 ```
-
-
-## Устанавливаем бекэнд зависимости
-```bash
-./vendor/bin/sail composer install
-```
-
 
 ## Выполняем команду
 ```bash
