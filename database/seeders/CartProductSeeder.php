@@ -2,17 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Models\CartProduct;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 
-class RoleSeeder extends Seeder
+class CartProductSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'user']);
+        CartProduct::factory()->count(50)->create();
     }
 }

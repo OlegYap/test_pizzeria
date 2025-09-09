@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('description')->nullable();
             $table->decimal('price', 8, 2)->nullable();
-            $table->enum('type', (new ProductEnum())->values());
+            $table->enum('type', ProductEnum::values());
         });
     }
 

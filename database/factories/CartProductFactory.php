@@ -15,7 +15,6 @@ class CartProductFactory extends Factory
     {
         return [
             'quantity' => $this->faker->randomNumber(),
-
             'product_id' => Product::factory(),
             'cart_id' => Cart::factory(),
         ];

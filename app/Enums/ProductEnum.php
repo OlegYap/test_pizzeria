@@ -2,12 +2,13 @@
 
 namespace App\Enums;
 
-enum ProductEnum
+enum ProductEnum: string
 {
-    public const Pizza = 'pizza';
-    public const Drink = 'drink';
+    case Pizza = 'pizza';
+    case Drink = 'drink';
 
-    public function values(): array
+
+    public static function values(): array
     {
         return array_column(self::cases(), 'value');
     }
