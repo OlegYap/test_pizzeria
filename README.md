@@ -16,7 +16,7 @@ FORWARD_REDIS_PORT=
 
 ## Устанавливаем бекэнд зависимости
 ```bash
-composer install
+./vendor/bin/sail composer install
 ```
 
 

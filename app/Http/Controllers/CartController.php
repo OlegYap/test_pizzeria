@@ -10,20 +10,20 @@ class CartController extends Controller
 {
     public function index()
     {
-        return CartResource::collection(Cart::all());
+        return CartResource::collection(Cart::query()->paginate(15));
     }
 
-    public function store(CartRequest $request)
+    public function store(CartRequest $request): CartResource
     {
         return new CartResource(Cart::create($request->validated()));
     }
 
-    public function show(Cart $cart)
+    public function show(Cart $cart): CartResource
     {
         return new CartResource($cart);
     }
 
-    public function update(CartRequest $request, Cart $cart)
+    public function update(CartRequest $request, Cart $cart): CartResource
     {
         $cart->update($request->validated());
 

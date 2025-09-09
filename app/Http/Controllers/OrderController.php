@@ -10,20 +10,20 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return OrderResource::collection(Order::all());
+        return OrderResource::collection(Order::query()->paginate(15));
     }
 
-    public function store(OrderRequest $request)
+    public function store(OrderRequest $request): OrderResource
     {
         return new OrderResource(Order::create($request->validated()));
     }
 
-    public function show(Order $order)
+    public function show(Order $order): OrderResource
     {
         return new OrderResource($order);
     }
 
-    public function update(OrderRequest $request, Order $order)
+    public function update(OrderRequest $request, Order $order): OrderResource
     {
         $order->update($request->validated());
 

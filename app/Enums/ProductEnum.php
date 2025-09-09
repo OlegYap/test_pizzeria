@@ -9,6 +9,6 @@ enum ProductEnum
 
     public function values(): array
     {
-        return array_combine(self::cases(), 'value');
+        return array_column(self::cases(), 'value');
     }
 }

@@ -2,10 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => view('welcome'));
 
-Route::get('/admin', function () {
-    return view('welcome');
-})->middleware(['auth'])->name('admin');
+Route::get('/admin', fn() => view('welcome'))->middleware(['auth'])->name('admin');
