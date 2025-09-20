@@ -12,7 +12,7 @@ build_dev_dependencies:
   stage: build
   image: composer:latest
   before_script:
-    - echo "$DEV_ENV_FILE" &gt; .env.local
+    - echo "$DEV_ENV_FILE" > .env.local
   script:
     - composer install --no-interaction
   artifacts:
