@@ -16,7 +16,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
             'price' => $this->faker->randomFloat(2, 1, 999),
-            'type' => $this->faker->randomElement([ProductEnum::cases()]),
+            'type' => $this->faker->randomElement(ProductEnum::cases()),
         ];
     }
 }

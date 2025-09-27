@@ -34,6 +34,6 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return response()->json();
+        return response()->noContent();
     }
 }
