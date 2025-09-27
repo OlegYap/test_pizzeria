@@ -22,9 +22,9 @@ build_dev_dependencies:
 
 build_dev_image:
   services:
-    - name: docker:dind
-      alias: dind
-  image: docker:20.10.16
+    - name: docker:24-dind
+      command: ["--tls=false"]
+  image: docker:24
   stage: build
   variables:
     GIT_STRATEGY: none
