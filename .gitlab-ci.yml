@@ -27,6 +27,7 @@ build_dev_image:
   image: docker:24
   stage: build
   variables:
+    DOCKER_TLS_CERTDIR: ""
     GIT_STRATEGY: none
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
