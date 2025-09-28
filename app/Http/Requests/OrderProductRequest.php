@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-
 class OrderProductRequest extends BaseRequest
 {
     public function rules(): array

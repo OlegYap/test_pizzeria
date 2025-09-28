@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-
 class ProductRequest extends BaseRequest
 {
     public function rules(): array
@@ -11,7 +10,7 @@ class ProductRequest extends BaseRequest
             'name' => ['required'],
             'description' => ['nullable'],
             'price' => ['nullable', 'numeric'],
-            'type' => ['required'],
+            'type' => ['sometimes'],
         ];
     }
 

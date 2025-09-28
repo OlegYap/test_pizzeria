@@ -15,7 +15,7 @@ class BaseRequest extends FormRequest
                 [
                     'message' => 'Ошибка валидации',
                     'errors' => $validator->errors(),
-                    ],
+                ],
                 422
             )
         );

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-
 class CartRequest extends BaseRequest
 {
     public function rules(): array
