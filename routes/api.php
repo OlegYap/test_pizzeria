@@ -22,7 +22,7 @@ Route::resource('products', ProductController::class);
 
 Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('users', UserController::class);
-    /*    Route::resource('products', ProductController::class);*/
+/*    Route::resource('products', ProductController::class);*/
     Route::resource('cart', CartController::class);
     Route::resource('cart-products', CartProductController::class);
     Route::resource('orders', OrderController::class);
