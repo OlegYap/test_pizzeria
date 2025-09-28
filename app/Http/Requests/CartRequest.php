@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class CartRequest extends FormRequest
+class CartRequest extends BaseRequest
 {
     public function rules(): array
     {
