@@ -94,7 +94,7 @@ phpunit:
     POSTGRES_PASSWORD: postgres
     GIT_STRATEGY: none
   before_script:
-    - apt-get update &amp;&amp; apt-get install -y postgresql-client
+    - apt-get update && apt-get install -y postgresql-client
     - until pg_isready -h postgres -p 5432 -U postgres; do sleep 1; done
     - bin/console doctrine:database:create --if-not-exists
     - bin/console doctrine:migrations:migrate --no-interaction
