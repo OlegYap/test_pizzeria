@@ -172,7 +172,8 @@ trivy_container_scan:
     TRIVY_AUTH_URL: "$CI_REGISTRY"
     TRIVY_NO_PROGRESS: "true"
     TRIVY_CACHE_DIR: ".trivycache/"
-    FULL_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    DOCKER_TLS_CERTDIR: ""
+    FULL_IMAGE_NAME: '$CI_REGISTRY_IMAGE:${CI_COMMIT_REF_SLUG == "main" ? "dev" : $CI_COMMIT_REF_SLUG}'
   script:
     - trivy --version
     - time trivy image --download-db-only
@@ -180,6 +181,9 @@ trivy_container_scan:
       --output "$CI_PROJECT_DIR/gl-container-scanning-report.json" "$FULL_IMAGE_NAME"
     - time trivy image --exit-code 0 "$FULL_IMAGE_NAME"
     - time trivy image --exit-code 1 --severity CRITICAL "$FULL_IMAGE_NAME"
+  services:
+    - name: docker:dind
+      alias: dind
   cache:
     paths:
       - .trivycache/
@@ -190,6 +194,9 @@ trivy_container_scan:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $FULL_IMAGE_NAME
   stage: test
 
 gitleaks_secret_detection:
