@@ -15,6 +15,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6",
+        "ergebnis/composer-normalize": "^2.48",
         "fakerphp/faker": "^1.23",
         "friendsofphp/php-cs-fixer": "^3.86",
         "larastan/larastan": "*",
@@ -73,7 +74,8 @@
         "cs-fixer:check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
         "cs-fixer:fix": "vendor/bin/php-cs-fixer fix",
         "rector": "rector process",
-        "rector:check": "rector process --dry-run"
+        "rector:check": "rector process --dry-run",
+        "normalize-check": "composer normalize --diff --dry-run"
     },
     "extra": {
         "laravel": {
@@ -85,6 +87,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "ergebnis/composer-normalize": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
