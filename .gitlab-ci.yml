@@ -78,7 +78,7 @@ cs:
   variables:
     GIT_STRATEGY: none
   script:
-    - ./vendor/bin/php-cs-fixer -v --config=.php-cs-fixer.dist.php fix --dry-run --stop-on-violation --diff
+    - ./vendor/bin/php-cs-fixer -v --config=.php-cs-fixer.php fix --dry-run --stop-on-violation --diff
 
 phpunit:
   stage: test
