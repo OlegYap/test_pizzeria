@@ -47,6 +47,20 @@ class ProductTest extends TestCase
         $this->assertDatabaseHas('products', $payload);
     }
 
+    public function test_validation_products(): void
+    {
+        $payload = [
+            'name' => '',
+            'description' => 'Unvalid Product',
+            'price' => 100,
+            'type' => ProductEnum::Pizza,
+        ];
+
+        $response = $this->postJson('api/products', $payload);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('name');
+    }
+
     public function test_update_products(): void
     {
         $product = Product::factory()->create();
