@@ -128,7 +128,7 @@ phpstan:
   stage: test
   image: $DEV_IMAGE
   script:
-    - vendor/bin/phpstan analyze
+    - vendor/bin/phpstan analyze --memory-limit=512M
 
 kics-iac-scan:
   stage: test
