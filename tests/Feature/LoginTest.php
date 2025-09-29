@@ -29,7 +29,7 @@ class LoginTest extends TestCase
 
         $body = $response->json();
 
-        $token = $body['access_token'] ?? $body['token'] ?? ($body['data']['token'] ?? null);
+        $token = $body['token'];
 
         $this->assertNotEmpty($token,'JWT token not found' . json_encode($body));
 

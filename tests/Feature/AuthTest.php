@@ -8,7 +8,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthTest extends TestCase
 {
-    public function test_auth_user()
+    public function test_register_user()
     {
         $user = User::factory()->create();
 
@@ -21,7 +21,7 @@ class AuthTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_auth_user_validation()
+    public function test_register_user_validation()
     {
         $payload = [
             'phone' => '',
