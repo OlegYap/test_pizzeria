@@ -34,6 +34,6 @@ class OrderController extends Controller
     {
         $order->delete();
 
-        return response()->json();
+        return response()->noContent();
     }
 }

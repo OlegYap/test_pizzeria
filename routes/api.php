@@ -19,7 +19,7 @@ Route::middleware('auth:api')->group(function () {
 });
 Route::resource('users', UserController::class);
 Route::resource('products', ProductController::class);
-Route::resource('cart', CartController::class);
+Route::resource('carts', CartController::class);
 Route::resource('cart-products', CartProductController::class);
 Route::resource('orders', OrderController::class);
 Route::resource('order-products', OrderProductController::class);

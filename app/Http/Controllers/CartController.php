@@ -34,6 +34,6 @@ class CartController extends Controller
     {
         $cart->delete();
 
-        return response()->json();
+        return response()->noContent();
     }
 }
