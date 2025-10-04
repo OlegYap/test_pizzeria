@@ -7,9 +7,9 @@ class OrderRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'exists:users'],
-            'address' => ['nullable'],
-            'delivery_time' => ['nullable'],
+            'user_id' => ['required', 'exists:users,id'],
+            'address' => ['required','string'],
+            'delivery_time' => ['required','string'],
         ];
     }
 
