@@ -49,6 +49,11 @@ class Order extends Model
         'delivery_time' => 'datetime',
     ];
 
+    protected function serializeDate(\DateTimeInterface $date): string
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class,'user_id','id');

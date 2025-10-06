@@ -27,7 +27,7 @@ class UserTest extends TestCase
 
         $response = $this->getJson('/api/users');
 
-        $response->assertStatus(200)->assertJsonCount(3);
+        $response->assertStatus(200)->assertJsonCount(User::count());
     }
 
     public function test_create_user(): void

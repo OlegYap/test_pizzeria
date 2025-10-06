@@ -27,7 +27,7 @@ class CartTest extends TestCase
 
         $response = $this->get("api/carts");
 
-        $response->assertStatus(200)->assertJsonCount(3);
+        $response->assertStatus(200)->assertJsonCount(Cart::count());
     }
 
     public function test_create_carts(): void

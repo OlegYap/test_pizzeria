@@ -14,7 +14,7 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'address' => $this->address,
-            'delivery_time' => $this->delivery_time,
+            'delivery_time' => $this->delivery_time?->format('Y-m-d H:i:s'),
 
             'user_id' => $this->user_id,
         ];

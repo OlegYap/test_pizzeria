@@ -28,7 +28,7 @@ class ProductTest extends TestCase
     {
         Product::factory()->create();
         $response = $this->get('/api/products');
-        $response->assertStatus(200)->assertJsonCount(3);
+        $response->assertStatus(200)->assertJsonCount(Product::count());
     }
 
     public function test_create_products(): void

@@ -27,7 +27,7 @@ class OrderProductTest extends TestCase
 
         $response = $this->get('/api/order-products');
 
-        $response->assertStatus(200)->assertJsonCount(3);
+        $response->assertStatus(200)->assertJsonCount(OrderProduct::count());
     }
 
     public function test_create_order_product(): void

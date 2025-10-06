@@ -36,12 +36,15 @@ class OrderTest extends TestCase
         $payload = [
             'user_id' => $user->id,
             'address' => 'test address',
-            'delivery_time' => 'test delivery address',
+            'delivery_time' => now()->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->postJson('/api/orders', $payload);
 
-        $response->assertCreated()->assertJsonFragment($payload);
+        $response->assertCreated()->assertJsonFragment([
+            'address' => 'test address',
+            'delivery_time' => $payload['delivery_time'],
+        ]);
 
         $this->assertDatabaseHas('orders', $payload);
     }
@@ -54,7 +57,7 @@ class OrderTest extends TestCase
         $payload = [
             'user_id' => $user->id,
             'address' => 'test address',
-            'delivery_time' => 'test delivery address',
+            'delivery_time' => now()->addDay()->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->putJson("/api/orders/{$order->id}", $payload);

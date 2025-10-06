@@ -27,7 +27,7 @@ class CartProductTest extends TestCase
 
         $response = $this->get('/api/cart-products');
 
-        $response->assertStatus(200)->assertJsonCount(3);
+        $response->assertStatus(200)->assertJsonCount(CartProduct::count());
     }
 
     public function test_create_cartProducts(): void
@@ -55,7 +55,7 @@ class CartProductTest extends TestCase
         $payload = [
             'product_id' => $cartProduct->product_id,
             'cart_id' => $cartProduct->cart_id,
-            'quantity' => $cartProduct->quantity,
+            'quantity' => 2,
         ];
 
         $response = $this->putJson('/api/cart-products/' . $cartProduct->id, $payload);
