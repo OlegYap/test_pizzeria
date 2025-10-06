@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('address')->nullable();
-            $table->string('delivery_time')->nullable();
+            $table->dateTime('delivery_time')->nullable();
             $table->timestamps();
         });
     }

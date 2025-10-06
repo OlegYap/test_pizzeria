@@ -45,6 +45,10 @@ class Order extends Model
         'delivery_time',
     ];
 
+    protected $casts = [
+        'delivery_time' => 'datetime',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class,'user_id','id');

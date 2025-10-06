@@ -9,7 +9,7 @@ class OrderRequest extends BaseRequest
         return [
             'user_id' => ['required', 'exists:users,id'],
             'address' => ['required','string'],
-            'delivery_time' => ['required','string'],
+            'delivery_time' => ['required','date_format:Y-m-d H:i:s'],
         ];
     }
 
