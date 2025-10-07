@@ -44,3 +44,8 @@ FORWARD_REDIS_PORT=
 ```bash
 ./vendor/bin/sail composer cs-fixer:fix
 ```
+
+### Запуск тестов
+```bash
+./vendor/bin/sail artisan test
+```
