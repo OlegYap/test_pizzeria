@@ -5,18 +5,35 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class OrderProductTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class);
+        $this->admin = User::factory()->create();
+        $this->admin->assignRole('admin');
+        $this->adminToken = JWTAuth::fromUser($this->admin);
+
+        $this->user = User::factory()->create();
+        $this->user->assignRole('user');
+        $this->userToken = JWTAuth::fromUser($this->user);
+    }
+
     public function test_show_order_product(): void
     {
         $orderProducts = OrderProduct::factory()->create();
 
-        $response = $this->get("/api/order-products/{$orderProducts->id}");
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
+            ->get("/api/admin/order-products/{$orderProducts->id}");
 
         $response->assertStatus(200)->assertJsonPath('data.id', $orderProducts->id);
     }
@@ -25,7 +42,8 @@ class OrderProductTest extends TestCase
     {
         OrderProduct::factory()->create();
 
-        $response = $this->get('/api/order-products');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
+            ->get('/api/admin/order-products');
 
         $response->assertStatus(200)->assertJsonCount(OrderProduct::count());
     }
@@ -42,7 +60,8 @@ class OrderProductTest extends TestCase
             'price' => 400,
         ];
 
-        $response = $this->postJson('/api/order-products', $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
+            ->postJson('/api/user/order-products', $payload);
 
         $response->assertCreated()->assertJsonFragment($payload);
 
@@ -52,7 +71,6 @@ class OrderProductTest extends TestCase
     public function test_update_order_product(): void
     {
         $orderProduct = OrderProduct::factory()->create();
-
         $order = Order::factory()->create();
         $product = Product::factory()->create();
 
@@ -63,7 +81,8 @@ class OrderProductTest extends TestCase
             'price' => 900,
         ];
 
-        $response = $this->putJson("/api/order-products/{$orderProduct->id}", $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
+            ->putJson("/api/admin/order-products/{$orderProduct->id}", $payload);
 
         $response->assertStatus(200)->assertJsonFragment($payload);
 
@@ -79,16 +98,19 @@ class OrderProductTest extends TestCase
             'price' => null,
         ];
 
-        $response = $this->postJson("/api/order-products", $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
+            ->postJson('/api/user/order-products', $payload);
+
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['order_id','product_id', 'quantity', 'price']);
+        $response->assertJsonValidationErrors(['order_id', 'product_id', 'quantity', 'price']);
     }
 
     public function test_delete_order_product(): void
     {
         $orderProduct = OrderProduct::factory()->create();
 
-        $response = $this->deleteJson("/api/order-products/{$orderProduct->id}");
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
+            ->deleteJson("/api/admin/order-products/{$orderProduct->id}");
 
         $response->assertNoContent();
 
@@ -99,25 +121,25 @@ class OrderProductTest extends TestCase
     {
         OrderProduct::factory()->count(35)->create();
 
-        $response = $this->getJson('/api/order-products?page=1');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
+            ->getJson('/api/admin/order-products?page=1');
 
         $response->assertStatus(200);
-
         $response->assertJsonCount(15, 'data');
-
         $response->assertJsonStructure([
             'data',
             'links' => ['first', 'last', 'prev', 'next'],
             'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'],
         ]);
 
-        $responsePage2 = $this->getJson('/api/order-products?page=2');
+        $responsePage2 = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
+            ->getJson('/api/admin/order-products?page=2');
         $responsePage2->assertStatus(200);
         $responsePage2->assertJsonCount(15, 'data');
 
-        $responsePage3 = $this->getJson('/api/order-products?page=3');
+        $responsePage3 = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
+            ->getJson('/api/admin/order-products?page=3');
         $responsePage3->assertStatus(200);
         $responsePage3->assertJsonCount(5, 'data');
-
     }
 }

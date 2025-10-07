@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return OrderResource::collection(Order::query()->paginate(15));
+        $query = Order::query();
+        if ($request->has('page')) {
+            return OrderResource::collection($query->paginate(15));
+        }
+
+        return OrderResource::collection($query->get());
     }
 
     public function store(OrderRequest $request): OrderResource

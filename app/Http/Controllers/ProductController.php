@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return ProductResource::collection(Product::query()->paginate(15));
+        $query = Product::query();
+        if ($request->has('page')) {
+            return ProductResource::collection($query->paginate(15));
+        }
+
+        return ProductResource::collection($query->get());
     }
 
     public function store(ProductRequest $request): ProductResource

@@ -3,22 +3,37 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthTest extends TestCase
 {
-    public function test_register_user()
+    use RefreshDatabase;
+
+    public function test_user_can_register_and_get_token()
     {
-        $user = User::factory()->create();
+        $payload = [
+            'email' => 'test@mail.ru',
+            'phone' => '+79990001122',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ];
 
-        $token = JWTAuth::fromUser($user);
+        $response = $this->postJson('api/register', $payload);
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])->getJson('api/me');
+        $response->assertStatus(201);
 
-        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+            'user' => ['id', 'email', 'phone', 'created_at'],
+            'roles',
+            'token',
+        ]);
+
+        $this->assertDatabaseHas('users', ['email' => 'test@mail.ru']);
+
+        $user = User::where('email', 'test@mail.ru')->first();
+        $this->assertTrue($user->hasRole('user'));
     }
 
     public function test_register_user_validation()

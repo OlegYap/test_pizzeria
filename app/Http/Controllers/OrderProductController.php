@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrderProductRequest;
 use App\Http\Resources\OrderProductResource;
 use App\Models\OrderProduct;
+use Illuminate\Http\Request;
 
 class OrderProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return OrderProductResource::collection(OrderProduct::query()->paginate(15));
+        $query = OrderProduct::query();
+        if ($request->has('page')) {
+            return OrderProductResource::collection($query->paginate(15));
+        }
+
+        return OrderProductResource::collection($query->get());
     }
 
     public function store(OrderProductRequest $request): OrderProductResource

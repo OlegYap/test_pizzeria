@@ -4,20 +4,33 @@ namespace Tests\Feature;
 
 use App\Enums\ProductEnum;
 use App\Models\Product;
+use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProductTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class);
+        $this->user = User::factory()->create();
+        $this->user->assignRole('admin');
+        $this->token = JWTAuth::fromUser($this->user);
+    }
+
     public function test_show_products(): void
     {
         $product = Product::factory()->create();
 
-        $response = $this->get("/api/products/{$product->id}");
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get("/api/admin/products/{$product->id}");
 
         $response->assertStatus(200)
             ->assertJsonPath('data.id', $product->id)
@@ -27,7 +40,10 @@ class ProductTest extends TestCase
     public function test_index_products(): void
     {
         Product::factory()->create();
-        $response = $this->get('/api/products');
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get('/api/admin/products');
+
         $response->assertStatus(200)->assertJsonCount(Product::count());
     }
 
@@ -40,7 +56,8 @@ class ProductTest extends TestCase
             'type' => ProductEnum::Pizza,
         ];
 
-        $response = $this->postJson('api/products', $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->postJson('/api/admin/products', $payload);
 
         $response->assertCreated()->assertJsonFragment($payload);
 
@@ -56,7 +73,9 @@ class ProductTest extends TestCase
             'type' => ProductEnum::Pizza,
         ];
 
-        $response = $this->postJson('api/products', $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->postJson('/api/admin/products', $payload);
+
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('name');
     }
@@ -70,19 +89,20 @@ class ProductTest extends TestCase
             'type' => $product->type->value,
         ];
 
-        $response = $this->putJson("api/products/{$product->id}", $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->putJson("/api/admin/products/{$product->id}", $payload);
 
         $response->assertOk()->assertJsonFragment(['name' => 'Updated Product']);
 
         $this->assertDatabaseHas('products', $payload);
     }
 
-
     public function test_delete_products(): void
     {
         $product = Product::factory()->create();
 
-        $response = $this->deleteJson("api/products/{$product->id}");
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->deleteJson("/api/admin/products/{$product->id}");
 
         $response->assertNoContent();
 
@@ -93,25 +113,25 @@ class ProductTest extends TestCase
     {
         Product::factory()->count(35)->create();
 
-        $response = $this->getJson('/api/products?page=1');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/admin/products?page=1');
 
         $response->assertStatus(200);
-
         $response->assertJsonCount(15, 'data');
-
         $response->assertJsonStructure([
             'data',
             'links' => ['first', 'last', 'prev', 'next'],
             'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'],
         ]);
 
-        $responsePage2 = $this->getJson('/api/products?page=2');
+        $responsePage2 = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/admin/products?page=2');
         $responsePage2->assertStatus(200);
         $responsePage2->assertJsonCount(15, 'data');
 
-        $responsePage3 = $this->getJson('/api/products?page=3');
+        $responsePage3 = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/admin/products?page=3');
         $responsePage3->assertStatus(200);
         $responsePage3->assertJsonCount(5, 'data');
-
     }
 }

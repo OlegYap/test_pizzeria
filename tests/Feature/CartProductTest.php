@@ -5,18 +5,31 @@ namespace Tests\Feature;
 use App\Models\Cart;
 use App\Models\CartProduct;
 use App\Models\Product;
+use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CartProductTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class);
+        $this->user = User::factory()->create();
+        $this->user->assignRole('user');
+        $this->token = JWTAuth::fromUser($this->user);
+    }
+
     public function test_show_cartProducts()
     {
         $cartProduct = CartProduct::factory()->create();
 
-        $response = $this->get("/api/cart-products/{$cartProduct->id}");
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get("/api/user/cart-products/{$cartProduct->id}");
 
         $response->assertStatus(200)->assertJsonPath('data.id', $cartProduct->id);
     }
@@ -25,7 +38,8 @@ class CartProductTest extends TestCase
     {
         CartProduct::factory()->create();
 
-        $response = $this->get('/api/cart-products');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get('/api/user/cart-products');
 
         $response->assertStatus(200)->assertJsonCount(CartProduct::count());
     }
@@ -41,7 +55,8 @@ class CartProductTest extends TestCase
             'quantity' => 1,
         ];
 
-        $response = $this->postJson('/api/cart-products', $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->postJson('/api/user/cart-products', $payload);
 
         $response->assertCreated()->assertJsonFragment($payload);
 
@@ -58,7 +73,8 @@ class CartProductTest extends TestCase
             'quantity' => 2,
         ];
 
-        $response = $this->putJson('/api/cart-products/' . $cartProduct->id, $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->putJson('/api/user/cart-products/' . $cartProduct->id, $payload);
 
         $response->assertOk()->assertJsonFragment($payload);
 
@@ -69,7 +85,8 @@ class CartProductTest extends TestCase
     {
         $cartProduct = CartProduct::factory()->create();
 
-        $response = $this->deleteJson("/api/cart-products/{$cartProduct->id}");
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->deleteJson("/api/user/cart-products/{$cartProduct->id}");
 
         $response->assertNoContent();
 
@@ -80,23 +97,24 @@ class CartProductTest extends TestCase
     {
         CartProduct::factory()->count(35)->create();
 
-        $response = $this->getJson('/api/cart-products?page=1');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/user/cart-products?page=1');
 
         $response->assertStatus(200);
-
         $response->assertJsonCount(15, 'data');
-
         $response->assertJsonStructure([
             'data',
             'links' => ['first', 'last', 'prev', 'next'],
             'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'],
         ]);
 
-        $responsePage2 = $this->getJson('/api/cart-products?page=2');
+        $responsePage2 = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/user/cart-products?page=2');
         $responsePage2->assertStatus(200);
         $responsePage2->assertJsonCount(15, 'data');
 
-        $responsePage3 = $this->getJson('/api/cart-products?page=3');
+        $responsePage3 = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/user/cart-products?page=3');
         $responsePage3->assertStatus(200);
         $responsePage3->assertJsonCount(5, 'data');
     }

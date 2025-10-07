@@ -3,29 +3,42 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RoleSeeder::class);
+        $this->user = User::factory()->create();
+        $this->user->assignRole('admin');
+        $this->token = JWTAuth::fromUser($this->user);
+    }
+
     public function test_show_user(): void
     {
         $user = User::factory()->create();
 
-        $response = $this->get("/api/users/{$user->id}");
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->get("/api/admin/users/{$user->id}");
 
         $response->assertStatus(200)->assertJsonPath('data.id', $user->id)
-        ->assertJsonPath('data.email', fn($email) => !empty($email));
+            ->assertJsonPath('data.email', fn($email) => ! empty($email));
     }
 
     public function test_index_users(): void
     {
         User::factory()->create();
 
-        $response = $this->getJson('/api/users');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/admin/users');
 
         $response->assertStatus(200)->assertJsonCount(User::count());
     }
@@ -33,12 +46,13 @@ class UserTest extends TestCase
     public function test_create_user(): void
     {
         $payload = [
-            'phone' => "79990555343",
+            'phone' => '79990555343',
             'email' => 'test1@mail.ru',
             'password' => 'password',
         ];
 
-        $response = $this->postJson('/api/users', $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->postJson('/api/admin/users', $payload);
 
         $response->assertCreated()
             ->assertJsonFragment([
@@ -61,12 +75,13 @@ class UserTest extends TestCase
         $user = User::factory()->create();
 
         $payload = [
-            'phone' => "79990555343",
-            'email' => "test111@mail.ru",
+            'phone' => '79990555343',
+            'email' => 'test111@mail.ru',
             'password' => 'password2',
         ];
 
-        $response = $this->putJson("/api/users/{$user->id}", $payload);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->putJson("/api/admin/users/{$user->id}", $payload);
 
         $response->assertStatus(200)
             ->assertJsonFragment(['email' => 'test111@mail.ru']);
@@ -87,36 +102,37 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->deleteJson('/api/users/' . $user->id);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->deleteJson('/api/admin/users/' . $user->id);
 
         $response->assertNoContent();
 
-        $this->assertDatabaseMissing('users',['id' => $user->id]);
+        $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 
-    public function test_paginate_products(): void
+    public function test_paginate_users(): void
     {
         User::factory()->count(35)->create();
 
-        $response = $this->getJson('/api/users?page=1');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/admin/users?page=1');
 
         $response->assertStatus(200);
-
         $response->assertJsonCount(15, 'data');
-
         $response->assertJsonStructure([
             'data',
             'links' => ['first', 'last', 'prev', 'next'],
             'meta' => ['current_page', 'from', 'last_page', 'path', 'per_page', 'to', 'total'],
         ]);
 
-        $responsePage2 = $this->getJson('/api/users?page=2');
+        $responsePage2 = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/admin/users?page=2');
         $responsePage2->assertStatus(200);
         $responsePage2->assertJsonCount(15, 'data');
 
-        $responsePage3 = $this->getJson('/api/users?page=3');
+        $responsePage3 = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->getJson('/api/admin/users?page=3');
         $responsePage3->assertStatus(200);
-        $responsePage3->assertJsonCount(6, 'data');
-
+        $responsePage3->assertJsonCount(5, 'data');
     }
 }

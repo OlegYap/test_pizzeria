@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CartRequest;
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return CartResource::collection(Cart::query()->paginate(15));
+        $query = Cart::query();
+
+        if ($request->has('page')) {
+            return CartResource::collection($query->paginate(15));
+        }
+
+        return CartResource::collection($query->get());
     }
 
     public function store(CartRequest $request): CartResource

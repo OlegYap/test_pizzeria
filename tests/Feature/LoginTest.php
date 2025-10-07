@@ -3,12 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_login_user()
     {
         $password = 'test123';
@@ -31,15 +33,15 @@ class LoginTest extends TestCase
 
         $token = $body['token'];
 
-        $this->assertNotEmpty($token,'JWT token not found' . json_encode($body));
+        $this->assertNotEmpty($token, 'JWT token not found' . json_encode($body));
 
-        $meResponse = $this->withHeaders([
+        $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
         ])->getJson('api/me');
 
         $response->assertStatus(200);
-
-        $meResponse->assertJsonFragment(['email' => $user->email]);
+        $response->assertJsonStructure(['token', 'user', 'roles']);
+        $response->assertJsonFragment(['email' => $user->email]);
     }
 
     public function test_login_user_validation()
