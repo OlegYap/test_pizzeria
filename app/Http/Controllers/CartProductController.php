@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CartProductRequest;
 use App\Http\Resources\CartProductResource;
 use App\Models\CartProduct;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class CartProductController extends Controller
 {
+    protected CartService $cartService;
+
+    public function __construct(CartService $cartService) {
+        $this->cartService = $cartService;
+    }
+
     public function index(Request $request)
     {
         $query = CartProduct::query();
@@ -20,9 +27,22 @@ class CartProductController extends Controller
         return CartProductResource::collection($query->get());
     }
 
-    public function store(CartProductRequest $request): CartProductResource
+    public function store(CartProductRequest $request)
     {
-        return new CartProductResource(CartProduct::create($request->validated()));
+        $data = $request->validated();
+
+        $cart = $this->cartService->addToCart($data['product_id'], $data['quantity']);
+        $cartProduct = CartProduct::where('cart_id', $cart->id)
+            ->where('product_id', $data['product_id'])
+            ->first();
+
+        if (!$cartProduct) {
+            throw new \Exception('Товар не найден в корзине', 404);
+        }
+
+        return (new CartProductResource($cartProduct))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function show(CartProduct $cartProduct): CartProductResource

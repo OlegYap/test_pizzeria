@@ -24,6 +24,36 @@ class CartProductTest extends TestCase
         $this->token = JWTAuth::fromUser($this->user);
     }
 
+    public function test_create_cartProducts_creates_cart_automatically(): void
+    {
+
+        $this->assertDatabaseMissing('carts',['user_id' => $this->user->id]);
+
+        $product = Product::factory()->create();
+
+        $payload = [
+            'product_id' => $product->id,
+            'quantity' => 2,
+        ];
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->postJson('/api/user/cart-products', $payload);
+
+        $response->assertCreated()->assertJsonFragment(
+            [
+                'product_id' => $product->id,
+                'quantity' => 2,
+            ]
+        );
+
+        $this->assertDatabaseHas('carts', ['user_id' => $this->user->id]);
+
+        $this->assertDatabaseHas('cart_products', [
+            'product_id' => $product->id,
+            'quantity' => 2
+        ]);
+    }
+
     public function test_show_cartProducts()
     {
         $cartProduct = CartProduct::factory()->create();
@@ -46,12 +76,10 @@ class CartProductTest extends TestCase
 
     public function test_create_cartProducts(): void
     {
-        $cart = Cart::factory()->create();
         $product = Product::factory()->create();
 
         $payload = [
             'product_id' => $product->id,
-            'cart_id' => $cart->id,
             'quantity' => 1,
         ];
 
@@ -59,6 +87,8 @@ class CartProductTest extends TestCase
             ->postJson('/api/user/cart-products', $payload);
 
         $response->assertCreated()->assertJsonFragment($payload);
+
+        $this->assertDatabaseHas('carts', ['user_id' => $this->user->id]);
 
         $this->assertDatabaseHas('cart_products', $payload);
     }

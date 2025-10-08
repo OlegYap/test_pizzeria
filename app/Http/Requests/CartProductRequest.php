@@ -10,7 +10,7 @@ class CartProductRequest extends BaseRequest
     {
         return [
             'product_id' => ['required', 'exists:products,id', new ProductLimitRule()],
-            'cart_id' => ['required', 'exists:carts,id'],
+            'cart_id' => ['sometimes', 'exists:carts,id'],
             'quantity' => ['required', 'integer'],
         ];
     }
