@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PaginationRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -9,18 +10,14 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index(PaginationRequest $request)
     {
-        $query = User::query();
-        if ($request->has('page')) {
-            $query->whereDoesntHave('roles', function ($q) {
-                $q->where('name', 'admin');
-            });
+        $query = User::query()
+        ->whereDoesntHave('roles', function ($q) {
+            $q->where('name','user');
+        });
 
-            return UserResource::collection($query->paginate(15));
-        }
-
-        return response()->json(UserResource::collection($query->get())->resolve());
+        return UserResource::collection($query->paginate($request->perPage()));
     }
 
     public function store(UserRequest $request): UserResource

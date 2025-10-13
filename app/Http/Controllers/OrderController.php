@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Http\Requests\PaginationRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index(Request $request)
+    public function index(PaginationRequest $request)
     {
         $query = Order::query();
-        if ($request->has('page')) {
-            return OrderResource::collection($query->paginate(15));
-        }
 
-        return OrderResource::collection($query->get());
+        return OrderResource::collection($query->paginate(
+            $request->perPage()
+        ));
     }
 
     public function store(OrderRequest $request): OrderResource

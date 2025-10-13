@@ -3,21 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CartRequest;
+use App\Http\Requests\PaginationRequest;
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function index(Request $request)
+    public function index(PaginationRequest $request)
     {
         $query = Cart::query();
 
-        if ($request->has('page')) {
-            return CartResource::collection($query->paginate(15));
-        }
-
-        return CartResource::collection($query->get());
+        return CartResource::collection(
+            $query->paginate($request->perPage())
+        );
     }
 
     public function store(CartRequest $request): CartResource

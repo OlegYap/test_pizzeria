@@ -12,11 +12,10 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::query();
-        if ($request->has('page')) {
-            return ProductResource::collection($query->paginate(15));
-        }
 
-        return ProductResource::collection($query->get());
+        return ProductResource::collection(
+            $query->paginate($request->perPage())
+        );
     }
 
     public function store(ProductRequest $request): ProductResource
