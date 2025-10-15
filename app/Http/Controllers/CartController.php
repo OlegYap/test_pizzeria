@@ -10,35 +10,24 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function index(PaginationRequest $request)
+    public function show(Request $request): CartResource
     {
-        $query = Cart::query();
-
-        return CartResource::collection(
-            $query->paginate($request->perPage())
-        );
-    }
-
-    public function store(CartRequest $request): CartResource
-    {
-        return new CartResource(Cart::create($request->validated()));
-    }
-
-    public function show(Cart $cart): CartResource
-    {
-        return new CartResource($cart);
-    }
-
-    public function update(CartRequest $request, Cart $cart): CartResource
-    {
-        $cart->update($request->validated());
+        $cart = Cart::where('user_id', $request->user()->id)
+            ->with('cartProducts.product')
+            ->firstOrCreate(['user_id' => $request->user()->id]);
 
         return new CartResource($cart);
     }
 
-    public function destroy(Cart $cart)
+    public function clear(Request $request)
     {
-        $cart->delete();
+        $cart = Cart::where('user_id', $request->user()->id)->first();
+
+        if (!$cart) {
+            return response()->json(['message' => 'Корзина не найден'], 404);
+        }
+
+        $cart->cartProducts()->delete();
 
         return response()->noContent();
     }

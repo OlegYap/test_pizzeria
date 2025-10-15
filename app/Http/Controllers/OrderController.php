@@ -36,7 +36,8 @@ class OrderController extends Controller
         return new OrderResource($order);
     }
 
-    public function destroy(Order $order)
+    /*TODO: переделать метод для отмены заказа*/
+    public function cancel(Order $order)
     {
         $order->delete();
 
