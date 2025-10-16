@@ -16,8 +16,8 @@ enum ProductEnum: string
     public function label(): string
     {
         return match ($this) {
-            self::Drink => 'напитков',
-            self::Pizza => 'пицц'
+            self::Drink => __('products.drink'),
+            self::Pizza => __('products.pizza'),
         };
     }
 }

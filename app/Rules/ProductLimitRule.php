@@ -29,11 +29,12 @@ class ProductLimitRule implements ValidationRule
             ProductEnum::Drink => 20,
         };
 
-        $count = \DB::table('order_products')
-            ->join('products', 'order_products.product_id', '=', 'products.id')
-            ->where('order_products.order_id', request('order_id'))
+        $count = \DB::table('cart_products')
+            ->join('products', 'cart_products.product_id', '=', 'products.id')
+            ->join('carts', 'cart_products.cart_id', '=', 'carts.id')
+            ->where('carts.user_id', auth()->id())
             ->where('products.type', $product->type)
-            ->sum('order_products.quantity');
+            ->sum('cart_products.quantity');
 
         if ($count + request('quantity') > $limit) {
             $fail("Вы не можете добавить больше {$limit} {$typeEnum->label()}");
