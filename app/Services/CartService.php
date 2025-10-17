@@ -4,17 +4,17 @@ namespace App\Services;
 
 use App\Models\Cart;
 use App\Models\CartProduct;
-use App\Models\Product;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class CartService
+readonly class CartService
 {
 
-    public function getOrCreateCart()
+    private function getOrCreateCart(): Cart
     {
         $user = auth()->user();
 
         if (!$user) {
-            throw new \Exception('Пользователь не авторизован');
+            throw new HttpException(401, 'Пользователь не авторизован');
         }
 
         $cart = Cart::firstOrCreate(

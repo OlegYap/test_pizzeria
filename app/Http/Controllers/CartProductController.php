@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CartProductRequest;
+use App\Http\Requests\AddToCartProductRequest;
 use App\Http\Requests\PaginationRequest;
+use App\Http\Requests\UpdateCartProductRequest;
 use App\Http\Resources\CartProductResource;
 use App\Models\CartProduct;
 use App\Services\CartService;
-use Illuminate\Http\Request;
+
 
 class CartProductController extends Controller
 {
-    protected CartService $cartService;
 
-    public function __construct(CartService $cartService) {
-        $this->cartService = $cartService;
-    }
+    public function __construct(
+        protected CartService $cartService
+    ) {}
 
     public function index(PaginationRequest $request)
     {
@@ -26,7 +26,7 @@ class CartProductController extends Controller
         );
     }
 
-    public function store(CartProductRequest $request)
+    public function store(AddToCartProductRequest $request)
     {
         $data = $request->validated();
 
@@ -36,7 +36,7 @@ class CartProductController extends Controller
             ->first();
 
         if (!$cartProduct) {
-            throw new \Exception('Товар не найден в корзине', 404);
+            throw new \HttpException('Товар не найден в корзине', 404);
         }
 
         return (new CartProductResource($cartProduct))
@@ -49,7 +49,7 @@ class CartProductController extends Controller
         return new CartProductResource($cartProduct);
     }
 
-    public function update(CartProductRequest $request, CartProduct $cartProduct): CartProductResource
+    public function update(UpdateCartProductRequest $request, CartProduct $cartProduct): CartProductResource
     {
         $cartProduct->update($request->validated());
 
