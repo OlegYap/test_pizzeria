@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $email
  * @property string|null $address
  * @property string|null $delivery_time
+ * @property string|null $status
  * @property string|null $created_at
  * @property string|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderProduct> $orderProducts
@@ -43,10 +45,12 @@ class Order extends Model
         'user_id',
         'address',
         'delivery_time',
+        'status',
     ];
 
     protected $casts = [
         'delivery_time' => 'datetime',
+        'status' => StatusEnum::class,
     ];
 
     protected function serializeDate(\DateTimeInterface $date): string
@@ -61,6 +65,6 @@ class Order extends Model
 
     public function orderProducts(): HasMany
     {
-        return $this->hasMany(OrderProduct::class, 'order_product_id', 'id');
+        return $this->hasMany(OrderProduct::class, 'order_id', 'id');
     }
 }

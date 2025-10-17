@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartProductController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +31,7 @@ Route::middleware(['auth:api', 'role:user'])->prefix('user')->name('user.')->gro
     Route::delete('cart-products/{cart_product}', [CartProductController::class, 'destroy'])->name('cart-products.destroy');
 
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/delivered', [OrderController::class, 'getDeliveredOrders'])->name('orders.delivered');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
     Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
@@ -49,7 +49,7 @@ Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->name('admin.')->
     Route::put('products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders', [OrderController::class, 'getUserOrders'])->name('orders.index');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
 });

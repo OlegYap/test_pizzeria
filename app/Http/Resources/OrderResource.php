@@ -13,10 +13,14 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
             'address' => $this->address,
             'delivery_time' => $this->delivery_time?->format('Y-m-d H:i:s'),
-
-            'user_id' => $this->user_id,
+            'status' => [
+                'value' => $this->status->value,
+                'label' => $this->status->labels()
+            ],
+            'order_products' => $this->whenLoaded('orderProducts', fn () => $this->orderProducts),
         ];
     }
 }

@@ -27,7 +27,7 @@ class PaginationRequest extends FormRequest
         ];
     }
 
-    public function perPage(): array
+    public function perPage(): int
     {
         return $this->input('per_page', 15);
     }
