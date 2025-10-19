@@ -29,22 +29,20 @@ class ProductTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->get("/api/admin/products/{$product->id}");
+        $response = $this->get("/api/products/{$product->id}");
 
         $response->assertStatus(200)
-            ->assertJsonPath('data.id', $product->id)
-            ->assertJsonPath('data.name', fn($name) => ! empty($name));
+            ->assertJsonPath('id', $product->id)
+            ->assertJsonPath('name', fn($name) => ! empty($name));
     }
 
     public function test_index_products(): void
     {
         Product::factory()->create();
 
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->get('/api/admin/products');
+        $response = $this->get('/api/products');
 
-        $response->assertStatus(200)->assertJsonCount(Product::count());
+        $response->assertStatus(200)->assertJsonCount(Product::count(),'data');
     }
 
     public function test_create_products(): void

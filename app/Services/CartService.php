@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 readonly class CartService
 {
 
-    private function getOrCreateCart(): Cart
+    public function getOrCreateCart(): Cart
     {
         $user = auth()->user();
 
@@ -17,12 +17,10 @@ readonly class CartService
             throw new HttpException(401, 'Пользователь не авторизован');
         }
 
-        $cart = Cart::firstOrCreate(
+        return Cart::firstOrCreate(
             ['user_id' => $user->id],
             ['user_id' => $user->id]
         );
-
-        return $cart;
     }
 
     public function addToCart(int $productId, int $quantity): Cart

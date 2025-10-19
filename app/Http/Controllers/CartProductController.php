@@ -19,7 +19,10 @@ class CartProductController extends Controller
 
     public function index(PaginationRequest $request)
     {
-        $query = CartProduct::query();
+        $cart = $this->cartService->getOrCreateCart();
+
+        $query = CartProduct::query()->where('cart_id', $cart->id)
+        ->with('product');
 
         return CartProductResource::collection(
             $query->paginate($request->perPage())

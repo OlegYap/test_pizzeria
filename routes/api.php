@@ -34,11 +34,12 @@ Route::middleware(['auth:api', 'role:user'])->prefix('user')->name('user.')->gro
     Route::get('orders/delivered', [OrderController::class, 'getDeliveredOrders'])->name('orders.delivered');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
-    Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::patch('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
 Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
     Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
@@ -49,7 +50,7 @@ Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->name('admin.')->
     Route::put('products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-    Route::get('orders', [OrderController::class, 'getUserOrders'])->name('orders.index');
+    Route::get('orders', [OrderController::class, 'adminIndex'])->name('admin-orders.index');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
 });

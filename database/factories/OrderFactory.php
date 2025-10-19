@@ -17,7 +17,7 @@ class OrderFactory extends Factory
             'address' => $this->faker->address(),
             'delivery_time' => $this->faker->dateTimeBetween('now', '+3 days')->format('Y-m-d H:i:s'),
             'user_id' => User::factory(),
-            'status' => $this->faker->randomElement(StatusEnum::cases()),
+            'status' => $this->faker->randomElement(StatusEnum::cases())?->value
         ];
     }
 }

@@ -53,6 +53,15 @@ class Order extends Model
         'status' => StatusEnum::class,
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function (Order $order) {
+            $order->user_id ??= auth()->id();
+            $order->status ??= StatusEnum::PROCESSING->value;
+        });
+    }
+
     protected function serializeDate(\DateTimeInterface $date): string
     {
         return $date->format('Y-m-d H:i:s');

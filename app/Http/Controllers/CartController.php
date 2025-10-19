@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CartRequest;
-use App\Http\Requests\PaginationRequest;
+
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use Illuminate\Http\Request;

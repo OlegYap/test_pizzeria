@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\StatusEnum;
 use App\Models\Order;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
@@ -43,17 +44,13 @@ class OrderTest extends TestCase
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
             ->get('/api/admin/orders');
 
-        $response->assertStatus(200)->assertJsonCount(Order::count());
+        $response->assertStatus(200)->assertJsonCount(Order::count(),'data');
     }
 
     public function test_create_order(): void
     {
-        $user = User::factory()->create();
-
         $payload = [
-            'user_id' => $user->id,
             'address' => 'test address',
-            'delivery_time' => now()->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
@@ -61,19 +58,19 @@ class OrderTest extends TestCase
 
         $response->assertCreated()->assertJsonFragment([
             'address' => 'test address',
-            'delivery_time' => $payload['delivery_time'],
         ]);
 
-        $this->assertDatabaseHas('orders', $payload);
+        $this->assertDatabaseHas('orders', [
+            'user_id' => $this->user->id,
+            'address' => 'test address',
+        ]);
     }
 
-    public function test_update_order(): void
+    public function test_admin_can_update_order_status(): void
     {
         $order = Order::factory()->create();
-        $user = User::factory()->create();
 
         $payload = [
-            'user_id' => $user->id,
             'address' => 'test address',
             'delivery_time' => now()->addDay()->format('Y-m-d H:i:s'),
         ];
@@ -86,16 +83,18 @@ class OrderTest extends TestCase
         $this->assertDatabaseHas('orders', $payload);
     }
 
-    public function test_delete_order(): void
+    public function test_cancel_order(): void
     {
-        $order = Order::factory()->create();
+        $order = Order::factory()->create(['user_id' => $this->user->id]);
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->userToken])
-            ->deleteJson("/api/user/orders/{$order->id}");
+            ->patchJson("/api/user/orders/{$order->id}/cancel");
 
         $response->assertNoContent();
-
-        $this->assertDatabaseMissing('orders', ['id' => $order->id]);
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'status' => StatusEnum::CANCELLED->value,
+        ]);
     }
 
     public function test_paginate_order(): void

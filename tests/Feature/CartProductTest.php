@@ -66,12 +66,14 @@ class CartProductTest extends TestCase
 
     public function test_index_cartProducts(): void
     {
-        CartProduct::factory()->create();
+        $cart = Cart::factory()->create(['user_id' => $this->user->id]);
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->get('/api/user/cart-products');
 
-        $response->assertStatus(200)->assertJsonCount(CartProduct::count());
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data');
     }
 
     public function test_create_cartProducts(): void
@@ -125,7 +127,8 @@ class CartProductTest extends TestCase
 
     public function test_paginate_cartProducts(): void
     {
-        CartProduct::factory()->count(35)->create();
+        $cart = Cart::factory()->create(['user_id' => $this->user->id]);
+        CartProduct::factory()->count(35)->create(['cart_id' => $cart->id]);
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->getJson('/api/user/cart-products?page=1');

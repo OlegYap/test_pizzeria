@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('address')->nullable();
             $table->dateTime('delivery_time')->nullable();
-            $table->enum('status', StatusEnum::values());
+            $table->enum('status', StatusEnum::values())->default(StatusEnum::PROCESSING->value);
             $table->timestamps();
         });
     }
