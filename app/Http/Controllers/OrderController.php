@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\StatusEnum;
-use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\PaginationRequest;
+use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;

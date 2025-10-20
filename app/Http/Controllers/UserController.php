@@ -6,7 +6,6 @@ use App\Http\Requests\PaginationRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -14,7 +13,7 @@ class UserController extends Controller
     {
         $query = User::query()
         ->whereDoesntHave('roles', function ($q) {
-            $q->where('name','user');
+            $q->where('name', 'user');
         });
 
         return UserResource::collection($query->paginate($request->perPage()));

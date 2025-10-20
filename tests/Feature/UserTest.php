@@ -40,7 +40,7 @@ class UserTest extends TestCase
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
             ->getJson('/api/admin/users');
 
-        $response->assertStatus(200)->assertJsonCount(User::count(),'data');
+        $response->assertStatus(200)->assertJsonCount(User::count(), 'data');
     }
 
     public function test_create_user(): void

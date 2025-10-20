@@ -18,7 +18,7 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::get('products', [ProductController::class, 'index']);
-Route::get('products/{id}', [ProductController::class, 'show']);
+Route::get('products/{product}', [ProductController::class, 'show']);
 
 Route::middleware(['auth:api', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('cart', [CartController::class, 'show'])->name('cart.show');

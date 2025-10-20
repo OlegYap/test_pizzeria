@@ -25,15 +25,15 @@ class ProductTest extends TestCase
         $this->token = JWTAuth::fromUser($this->user);
     }
 
-    public function test_show_products(): void
+    public function test_show_product(): void
     {
         $product = Product::factory()->create();
 
         $response = $this->get("/api/products/{$product->id}");
 
         $response->assertStatus(200)
-            ->assertJsonPath('id', $product->id)
-            ->assertJsonPath('name', fn($name) => ! empty($name));
+            ->assertJsonPath('data.id', $product->id)
+            ->assertJsonPath('data.name', fn($name) => ! empty($name));
     }
 
     public function test_index_products(): void
@@ -42,7 +42,7 @@ class ProductTest extends TestCase
 
         $response = $this->get('/api/products');
 
-        $response->assertStatus(200)->assertJsonCount(Product::count(),'data');
+        $response->assertStatus(200)->assertJsonCount(Product::count(), 'data');
     }
 
     public function test_create_products(): void

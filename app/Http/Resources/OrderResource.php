@@ -18,9 +18,9 @@ class OrderResource extends JsonResource
             'delivery_time' => $this->delivery_time?->format('Y-m-d H:i:s'),
             'status' => [
                 'value' => $this->status->value,
-                'label' => $this->status->labels()
+                'label' => $this->status->labels(),
             ],
-            'order_products' => $this->whenLoaded('orderProducts', fn () => $this->orderProducts),
+            'order_products' => $this->whenLoaded('orderProducts', fn() => $this->orderProducts),
         ];
     }
 }

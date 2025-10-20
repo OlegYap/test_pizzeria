@@ -24,9 +24,9 @@ class CartResource extends JsonResource
 
             'total_price' => $this->whenLoaded('cartProducts', function () {
                 return $this->cartProducts->sum(
-                    fn ($item) => $item->product->price * $item->quantity
+                    fn($item) => $item->product->price * $item->quantity
                 );
-            })
+            }),
         ];
     }
 }

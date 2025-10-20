@@ -29,7 +29,7 @@ class CartTest extends TestCase
         $cart = Cart::factory()->create(['user_id' => $this->user->id]);
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->get("/api/user/cart");
+            ->get('/api/user/cart');
 
         $response->assertStatus(200)
             ->assertJsonPath('data.id', $cart->id);
@@ -86,11 +86,11 @@ class CartTest extends TestCase
         ]);
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
-            ->deleteJson("api/user/cart/clear");
+            ->deleteJson('api/user/cart/clear');
 
         $response->assertNoContent();
 
-        $this->assertDatabaseHas('carts',['id' => $cart->id]);
+        $this->assertDatabaseHas('carts', ['id' => $cart->id]);
 
         $this->assertDatabaseMissing('cart_products', ['cart_id' => $cart->id]);
     }

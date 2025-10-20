@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-
 class UpdateCartProductRequest extends BaseRequest
 {
     /**

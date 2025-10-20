@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use Illuminate\Http\Request;
@@ -22,7 +21,7 @@ class CartController extends Controller
     {
         $cart = Cart::where('user_id', $request->user()->id)->first();
 
-        if (!$cart) {
+        if (! $cart) {
             return response()->json(['message' => 'Корзина не найден'], 404);
         }
 

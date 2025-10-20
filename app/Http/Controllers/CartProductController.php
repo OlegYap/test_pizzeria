@@ -9,12 +9,10 @@ use App\Http\Resources\CartProductResource;
 use App\Models\CartProduct;
 use App\Services\CartService;
 
-
-class CartProductController extends Controller
+final class CartProductController extends Controller
 {
-
     public function __construct(
-        protected CartService $cartService
+        private CartService $cartService
     ) {}
 
     public function index(PaginationRequest $request)
@@ -38,7 +36,7 @@ class CartProductController extends Controller
             ->where('product_id', $data['product_id'])
             ->first();
 
-        if (!$cartProduct) {
+        if (! $cartProduct) {
             throw new \HttpException('Товар не найден в корзине', 404);
         }
 

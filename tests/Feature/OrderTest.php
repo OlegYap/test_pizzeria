@@ -44,7 +44,7 @@ class OrderTest extends TestCase
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->adminToken])
             ->get('/api/admin/orders');
 
-        $response->assertStatus(200)->assertJsonCount(Order::count(),'data');
+        $response->assertStatus(200)->assertJsonCount(Order::count(), 'data');
     }
 
     public function test_create_order(): void

@@ -18,7 +18,7 @@ class ProductLimitRule implements ValidationRule
     {
         $product = Product::find($value);
 
-        if (!$product) {
+        if (! $product) {
             return;
         }
 

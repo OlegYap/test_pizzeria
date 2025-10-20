@@ -27,7 +27,7 @@ class CartProductTest extends TestCase
     public function test_create_cartProducts_creates_cart_automatically(): void
     {
 
-        $this->assertDatabaseMissing('carts',['user_id' => $this->user->id]);
+        $this->assertDatabaseMissing('carts', ['user_id' => $this->user->id]);
 
         $product = Product::factory()->create();
 
@@ -50,7 +50,7 @@ class CartProductTest extends TestCase
 
         $this->assertDatabaseHas('cart_products', [
             'product_id' => $product->id,
-            'quantity' => 2
+            'quantity' => 2,
         ]);
     }
 
