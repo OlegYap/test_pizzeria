@@ -48,7 +48,7 @@ class GenerateReportJob implements ShouldQueue
                     'amount' => $orderProduct->quantity,
                     'user' => [
                         'id' => $order->user->id,
-                        'name' => $order->user->name
+                        'email' => $order->user->email
                     ]
                 ], JSON_THROW_ON_ERROR);
             }
