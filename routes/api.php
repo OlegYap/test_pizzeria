@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,8 @@ Route::middleware('auth:api')->group(function () {
 
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/{product}', [ProductController::class, 'show']);
+
+Route::post('report', [ReportController::class, 'create']);
 
 Route::middleware(['auth:api', 'role:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('cart', [CartController::class, 'show'])->name('cart.show');

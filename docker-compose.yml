@@ -64,6 +64,24 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+    rabbitmq:
+        image: "rabbitmq:3-management-alpine"
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        environment:
+            RABBITMQ_DEFAULT_USER: user
+            RABBITMQ_DEFAULT_PASSWORD: password
+            RABBITMQ_DEFAULT_VHOST: /
+        networks:
+            - sail
+        volumes:
+            - "sail-rabbitmq:/var/lib/rabbitmq"
+        healthcheck:
+            test: [ "CMD","rabbitmqctl","status" ]
+            interval: 10s
+            retries: 5
+
 networks:
     sail:
         driver: bridge
@@ -71,4 +89,6 @@ volumes:
     sail-pgsql:
         driver: local
     sail-redis:
+        driver: local
+    sail-rabbitmq:
         driver: local
