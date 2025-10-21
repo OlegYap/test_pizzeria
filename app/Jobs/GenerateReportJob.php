@@ -17,14 +17,11 @@ class GenerateReportJob implements ShouldQueue
     use SerializesModels;
     use Dispatchable;
 
-    public string $reportId;
-
     /**
      * Create a new job instance.
      */
-    public function __construct(string $reportId)
+    public function __construct(public string $reportId)
     {
-        $this->reportId = $reportId;
     }
 
     /**
@@ -48,8 +45,8 @@ class GenerateReportJob implements ShouldQueue
                     'amount' => $orderProduct->quantity,
                     'user' => [
                         'id' => $order->user->id,
-                        'email' => $order->user->email
-                    ]
+                        'email' => $order->user->email,
+                    ],
                 ], JSON_THROW_ON_ERROR);
             }
         }

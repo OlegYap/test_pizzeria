@@ -18,15 +18,11 @@ class CartResource extends JsonResource
 
             'products' => CartProductResource::collection($this->whenLoaded('products')),
 
-            'total_items' => $this->whenLoaded('cartProducts', function () {
-                return $this->cartProducts->sum('quantity');
-            }),
+            'total_items' => $this->whenLoaded('cartProducts', fn() => $this->cartProducts->sum('quantity')),
 
-            'total_price' => $this->whenLoaded('cartProducts', function () {
-                return $this->cartProducts->sum(
-                    fn($item) => $item->product->price * $item->quantity
-                );
-            }),
+            'total_price' => $this->whenLoaded('cartProducts', fn() => $this->cartProducts->sum(
+                fn($item) => $item->product->price * $item->quantity
+            )),
         ];
     }
 }

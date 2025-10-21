@@ -16,7 +16,7 @@ class ReportController extends Controller
 
         return response()->json([
             'status' => 'queued',
-            'reportId' => $reportId
+            'reportId' => $reportId,
         ]);
     }
 }

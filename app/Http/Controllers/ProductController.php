@@ -18,9 +18,7 @@ class ProductController extends Controller
 
         $cacheKey = "products_page_{$page}_per_{$perPage}";
 
-        $products = Cache::remember($cacheKey,now()->addDay(), function () use ($perPage) {
-            return Product::paginate($perPage);
-        });
+        $products = Cache::tags(['products'])->remember($cacheKey, now()->addDay(), fn() => Product::paginate($perPage));
 
         return ProductResource::collection($products);
     }
@@ -29,7 +27,7 @@ class ProductController extends Controller
     {
         $product = Product::create($request->validated());
 
-        Cache::flush();
+        Cache::tags(['products'])->flush();
 
         return new ProductResource($product);
     }
@@ -38,9 +36,7 @@ class ProductController extends Controller
     {
         $cacheKey = "products_show_{$product->id}";
 
-        $cachedProduct = Cache::remember($cacheKey,now()->addDay(), function () use ($product) {
-            return $product;
-        });
+        $cachedProduct = Cache::tags(['products'])->remember($cacheKey, now()->addDay(), fn() => $product);
 
         return new ProductResource($cachedProduct);
     }
@@ -49,8 +45,6 @@ class ProductController extends Controller
     {
         $product->update($request->validated());
 
-        Cache::forget("product_{$product->id}");
-
         return new ProductResource($product);
     }
 
@@ -58,8 +52,7 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        Cache::forget("products_{$product->id}");
-        Cache::flush();
+        Cache::tags(['products'])->flush();
 
         return response()->noContent();
     }

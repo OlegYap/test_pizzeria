@@ -12,7 +12,7 @@ use App\Services\CartService;
 final class CartProductController extends Controller
 {
     public function __construct(
-        private CartService $cartService
+        private readonly CartService $cartService
     ) {}
 
     public function index(PaginationRequest $request)
@@ -27,7 +27,7 @@ final class CartProductController extends Controller
         );
     }
 
-    public function store(AddToCartProductRequest $request)
+    public function store(AddToCartProductRequest $request): \Symfony\Component\HttpFoundation\Response
     {
         $data = $request->validated();
 
