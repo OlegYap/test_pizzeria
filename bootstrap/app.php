@@ -1,9 +1,9 @@
 <?php
 
+use App\Jobs\GenerateReportJob;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
@@ -22,19 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (Throwable $e) {
-
-
-            if ($e instanceof ValidationException) {
-                return response()->json([
-                    'message' => 'Ошибка валидации',
-                    'errors'  => $e->errors(),
-                ], 422);
-            }
-
-
-
-            return null;
-        });
-    })->create();
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->call(function () {
+            $reportId = Str::uuid();
+            GenerateReportJob::dispatch($reportId);
+        })->weeklyOn(1,'03:00');
+    });
