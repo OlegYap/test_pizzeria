@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaginationRequest;
 use App\Http\Requests\ProductRequest;
+use App\Http\Requests\SearchProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
@@ -55,5 +57,17 @@ class ProductController extends Controller
         Cache::tags(['products'])->flush();
 
         return response()->noContent();
+    }
+
+    public function search(SearchProductRequest $request): JsonResponse
+    {
+        $query = $request->input('q');
+
+        $products = Product::search($query)->get();
+
+        return response()->json([
+            'data' => $products,
+            'count' => $products->count(),
+        ]);
     }
 }
