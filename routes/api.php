@@ -8,6 +8,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Prometheus\CollectorRegistry;
+use Prometheus\RenderTextFormat;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login'])->name('login');
@@ -18,9 +20,18 @@ Route::middleware('auth:api')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
 });
 
-Route::get('products/search', [ProductController::class, 'search']);
-Route::get('products', [ProductController::class, 'index']);
-Route::get('products/{product}', [ProductController::class, 'show']);
+
+Route::get('/metrics', function() {
+    $registry = app(CollectorRegistry::class);
+    $renderer = new RenderTextFormat();
+    $metrics = $registry->getMetricFamilySamples();
+    return response($renderer->render($metrics), 200)
+        ->header('Content-Type', RenderTextFormat::MIME_TYPE);
+})->name('metrics');
+
+Route::get('products/search', [ProductController::class, 'search'])->name('products.search');
+Route::get('products', [ProductController::class, 'index'])->name('products.index');
+Route::get('products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 Route::post('report', [ReportController::class, 'create']);
 
